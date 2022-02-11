@@ -57,8 +57,9 @@ botSlider.oninput = function () {
 // Singleplayer in-game section
 const singleplayerGame = document.querySelector('.singleplayerGame');
 
+// Hide game settings and start the game.
+// Probably should take in the number of bots as param.
 function startSingleplayerGame() {
     singleplayerSettings.style.display = 'none';
     singleplayerGame.style.display = 'block';
-    
 }
