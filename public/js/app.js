@@ -4,6 +4,10 @@
  * Mujahid "hypercyte" Ahmed
  */
 
+/*
+Elements
+*/
+
 // Home button
 const homeButton = document.getElementById('homeButton');
 
@@ -22,6 +26,16 @@ const botSlider = document.getElementById('botCount');
 // The output of the number currently selected in the bot slider
 const botSliderOutput = document.getElementById('botsliderOutput');
 
+// Singleplayer in-game section
+const singleplayerGame = document.querySelector('.singleplayerGame');
+
+// Singleplayer menu start game button
+const singleplayerStartButton = document.getElementById('startGameButton');
+
+/*
+Event listeners
+*/
+
 // Singleplayer button click listener
 singleplayerButton.addEventListener('click', () => {
     openSingleplayerMenu();
@@ -33,6 +47,16 @@ homeButton.addEventListener('click', () => {
     if (singleplayerSettings.style.display === 'none') return;
     closeSingleplayerMenu();
 })
+
+// Start button click listener
+singleplayerStartButton.addEventListener('click', () => {
+    const bots = botSlider.value;
+    startSingleplayerGame(bots);
+})
+
+/*
+Functions
+*/
 
 // Open singleplayer settings and hide gamemode buttons
 function openSingleplayerMenu() {
@@ -54,12 +78,10 @@ botSlider.oninput = function () {
     botSliderOutput.innerHTML = this.value;
 }
 
-// Singleplayer in-game section
-const singleplayerGame = document.querySelector('.singleplayerGame');
-
 // Hide game settings and start the game.
 // Probably should take in the number of bots as param.
-function startSingleplayerGame() {
+function startSingleplayerGame(bots) {
     singleplayerSettings.style.display = 'none';
     singleplayerGame.style.display = 'block';
+    console.log(`Game started with ${bots} bots.`)
 }
