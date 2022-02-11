@@ -23,13 +23,14 @@
 
 <section>
 
-    <button>Play with Bots</button>
-    <button>Play Multiplayer</button>
+    <button id="homeButton">Home</button>
+    <button id="singleplayerButton">Play with Bots</button>
+    <button id="multiplayerButton">Play Multiplayer</button>
 
-    <div class="singleplayer">
-
+    <div class="singleplayerSettings">
+        
         <!-- Bot slider -->
-        <div class="slidecontainer">
+        <div class="slidecontainer" id="botslider">
             <input type="range" min="1" max="24" value="12" class="slider" id="botCount">
         </div>
 
@@ -38,7 +39,7 @@
 </section>
 
     <!-- Socket.IO Javacript 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/app.js" charset="utf-8"></script>-->
+    <script src="/socket.io/socket.io.js"></script>-->
+    <script src="js/app.js" charset="utf-8"></script>
 </body>
 </html>
