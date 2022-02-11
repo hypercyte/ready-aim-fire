@@ -16,6 +16,12 @@ const mutliplayerButton = document.getElementById('multiplayerButton');
 // Singleplayer game settings menu
 const singleplayerSettings = document.querySelector('.singleplayerSettings');
 
+// Slider choosing the number of bots for a game
+const botSlider = document.getElementById('botCount');
+
+// The output of the number currently selected in the bot slider
+const botSliderOutput = document.getElementById('botsliderOutput');
+
 // Singleplayer button click listener
 singleplayerButton.addEventListener('click', () => {
     openSingleplayerMenu();
@@ -40,4 +46,10 @@ function closeSingleplayerMenu() {
     singleplayerButton.style.display = 'inline';
     mutliplayerButton.style.display = 'inline';
     singleplayerSettings.style.display = 'none';
+}
+
+// Bot number slider value
+botSliderOutput.innerHTML = botSlider.value;
+botSlider.oninput = function () {
+    botSliderOutput.innerHTML = this.value;
 }
