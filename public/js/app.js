@@ -8,29 +8,14 @@
 Elements
 */
 
-// Home button
-const homeButton = document.getElementById('homeButton');
-
-// Singleplayer or "Play With Bots" button
-const singleplayerButton = document.getElementById('singleplayerButton');
-
-// Multiplayer button
-const mutliplayerButton = document.getElementById('multiplayerButton');
-
-// Singleplayer game settings menu
-const singleplayerSettings = document.querySelector('.singleplayerSettings');
-
-// Slider choosing the number of bots for a game
-const botSlider = document.getElementById('botCount');
-
-// The output of the number currently selected in the bot slider
-const botSliderOutput = document.getElementById('botsliderOutput');
-
-// Singleplayer in-game section
-const singleplayerGame = document.querySelector('.singleplayerGame');
-
-// Singleplayer menu start game button
-const singleplayerStartButton = document.getElementById('startGameButton');
+const homeButton                = document.getElementById('homeButton'); // Home button
+const singleplayerButton        = document.getElementById('singleplayerButton'); // Singleplayer or "Play With Bots" button
+const mutliplayerButton         = document.getElementById('multiplayerButton'); // Multiplayer button
+const singleplayerStartButton   = document.getElementById('startGameButton'); // Singleplayer menu start game button
+const botSlider                 = document.getElementById('botCount'); // Slider choosing the number of bots for a game
+const botSliderOutput           = document.getElementById('botsliderOutput'); // The output of the number currently selected in the bot slider
+const singleplayerSettings      = document.querySelector('.singleplayerSettings'); // Singleplayer game settings menu
+const singleplayerGame          = document.querySelector('.singleplayerGame'); // Singleplayer in-game section
 
 /*
 Event listeners
@@ -78,8 +63,8 @@ function openSingleplayerMenu() {singleplayerSettings.style.display = 'block';}
 function closeSingleplayerMenu() {singleplayerSettings.style.display = 'none';}
 
 // Show/hide game window
-function showGame() {singleplayerGame.style.display = 'block';}
-function hideGame() {singleplayerGame.style.display = 'none';}
+function openGame() {singleplayerGame.style.display = 'block';}
+function closeGame() {singleplayerGame.style.display = 'none';}
 
 // Bot number slider value
 botSliderOutput.innerHTML = botSlider.value;
@@ -90,7 +75,18 @@ botSlider.oninput = function () {
 // Hide game settings and start the game.
 // Probably should take in the number of bots as param.
 function startSingleplayerGame(bots) {
-    singleplayerSettings.style.display = 'none';
-    singleplayerGame.style.display = 'block';
-    console.log(`Game started with ${bots} bots.`)
+    closeSingleplayerMenu();
+    openGame();
+    console.log(`Game started with ${bots} bots.`);
+
+    /*
+    Elements
+    */
+    const shootEnemyButton      = document.getElementById('shoot-enemy');
+    const shootYourselfButton   = document.getElementById('shoot-yourself');
+    const doNothingButton       = document.getElementById('do-nothing');
+
+    let roundNumber = 0;
+
+
 }
