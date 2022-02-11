@@ -82,11 +82,53 @@ function startSingleplayerGame(bots) {
     /*
     Elements
     */
+
     const shootEnemyButton      = document.getElementById('shoot-enemy');
     const shootYourselfButton   = document.getElementById('shoot-yourself');
     const doNothingButton       = document.getElementById('do-nothing');
 
-    let roundNumber = 0;
+    /*
+    Variables
+    */
 
+    let roundNumber     = 0;  // Keeps track of which round we are currently on.
+    const players       = []; // array of all players. will be populated later.
 
+    /*
+    Player factory
+    */
+
+    function createPlayer(number) {
+        return {
+            number,
+            alive: 1,
+            get playerNumber() {
+                return this.number;
+            },
+            get aliveStatus() {
+                return this.alive;
+            },
+            set aliveStatus(a) {
+                this.alive = a;
+            }
+        };
+    }
+
+    /*
+    Creating playerbase
+    */
+
+    players.push(createPlayer(0)); // create the non-bot player
+    console.log('created player 0');
+    for(let i = 1; i <= bots; i++) {
+        players.push(createPlayer(i));
+        console.log(`created bot ${i}`);
+    }
+
+    // Testing purposes
+    //for (p of players) {
+    //    if (p.playerNumber === 4) p.aliveStatus = 0;
+    //    const playerStatus = p.aliveStatus ? 'alive' : 'dead';
+    //    console.log(`Player ${p.playerNumber} is ${playerStatus}`);
+    //}
 }
