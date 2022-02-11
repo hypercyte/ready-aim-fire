@@ -98,6 +98,8 @@ function startSingleplayerGame(bots) {
     Player factory
     */
 
+    // Object factory pattern
+    /*
     function createPlayer(number) {
         return {
             number,
@@ -113,22 +115,61 @@ function startSingleplayerGame(bots) {
             }
         };
     }
+    */
+
+    // Constructor/prototype pattern attempt
+    /*
+    function Player(playerNumber) {
+        this.playerNumber = playerNumber;
+        this.alive  = 1;
+    }
+
+    Player.prototype.getPlayerNumber = () => {
+        return this.playerNumber;
+    }
+    */
+
+    // Constructor/prototype method class equivalent
+    class Player {
+        constructor(playerNumber) {
+            this.playerNumber   = playerNumber;
+            this.alive          = 1;
+        }
+        getPlayerNumber() {
+            return this.playerNumber;
+        }
+        getAliveStatus() {
+            return this.alive;
+        }
+        setAliveStatus(alive) {
+            this.alive = alive;
+        }
+    }
 
     /*
     Creating playerbase
     */
 
-    players.push(createPlayer(0)); // create the non-bot player
+    // Object factory pattern
+
+    /*players.push(createPlayer(0)); // create the non-bot player
     console.log('created player 0');
     for(let i = 1; i <= bots; i++) {
         players.push(createPlayer(i));
         console.log(`created bot ${i}`);
+    }*/
+
+    // Constructor/prototype pattern
+    players.push(new Player(0)); // create the non-bot player
+    console.log('created player 0');
+    for(let i = 1; i <= bots; i++) {
+        players.push(new Player(i));
+        console.log(`created bot ${i}`);
     }
 
-    // Testing purposes
-    //for (p of players) {
-    //    if (p.playerNumber === 4) p.aliveStatus = 0;
-    //    const playerStatus = p.aliveStatus ? 'alive' : 'dead';
-    //    console.log(`Player ${p.playerNumber} is ${playerStatus}`);
-    //}
+    for (p of players) {
+        if (p.playerNumber === 4) p.setAliveStatus(0);
+        const playerStatus = p.getAliveStatus() ? 'alive' : 'dead';
+        console.log(`Player ${p.getPlayerNumber()} is ${playerStatus}`);
+    }
 }
