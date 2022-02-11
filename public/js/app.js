@@ -53,3 +53,12 @@ botSliderOutput.innerHTML = botSlider.value;
 botSlider.oninput = function () {
     botSliderOutput.innerHTML = this.value;
 }
+
+// Singleplayer in-game section
+const singleplayerGame = document.querySelector('.singleplayerGame');
+
+function startSingleplayerGame() {
+    singleplayerSettings.style.display = 'none';
+    singleplayerGame.style.display = 'block';
+    
+}
