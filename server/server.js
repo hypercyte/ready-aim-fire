@@ -1,5 +1,5 @@
 /**
- * app.js
+ * server.js
  * RAF
  * Mujahid "hypercyte" Ahmed
  */
