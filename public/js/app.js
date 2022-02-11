@@ -39,13 +39,16 @@ Event listeners
 // Singleplayer button click listener
 singleplayerButton.addEventListener('click', () => {
     openSingleplayerMenu();
-    console.log("buttoin clicked and run")
+    hideGamemodeButtons();
 })
 
 // Home button click listener
 homeButton.addEventListener('click', () => {
-    if (singleplayerSettings.style.display === 'none') return;
+    if (singleplayerButton.style.display !== 'none') return;
     closeSingleplayerMenu();
+    showGamemodeButtons();
+    hideGame();
+    // TODO: Clicking home ends the game prematurely, thus should clear information about the game probably.
 })
 
 // Start button click listener
@@ -58,19 +61,25 @@ singleplayerStartButton.addEventListener('click', () => {
 Functions
 */
 
-// Open singleplayer settings and hide gamemode buttons
-function openSingleplayerMenu() {
+// Hide gamemode buttons
+function hideGamemodeButtons() {
     singleplayerButton.style.display = 'none';
     mutliplayerButton.style.display = 'none';
-    singleplayerSettings.style.display = 'block';
 }
 
-// Close singleplayer settings and reveal gamemode buttons
-function closeSingleplayerMenu() {
+// Show gamemode buttons
+function showGamemodeButtons() {
     singleplayerButton.style.display = 'inline';
     mutliplayerButton.style.display = 'inline';
-    singleplayerSettings.style.display = 'none';
-}
+} 
+
+// Open/close singleplayer game settings menu
+function openSingleplayerMenu() {singleplayerSettings.style.display = 'block';}
+function closeSingleplayerMenu() {singleplayerSettings.style.display = 'none';}
+
+// Show/hide game window
+function showGame() {singleplayerGame.style.display = 'block';}
+function hideGame() {singleplayerGame.style.display = 'none';}
 
 // Bot number slider value
 botSliderOutput.innerHTML = botSlider.value;
