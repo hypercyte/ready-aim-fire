@@ -95,41 +95,9 @@ function startSingleplayerGame(bots) {
     const players       = []; // array of all players. will be populated later.
 
     /*
-    Player factory
+    Player class
     */
 
-    // Object factory pattern
-    /*
-    function createPlayer(number) {
-        return {
-            number,
-            alive: 1,
-            get playerNumber() {
-                return this.number;
-            },
-            get aliveStatus() {
-                return this.alive;
-            },
-            set aliveStatus(a) {
-                this.alive = a;
-            }
-        };
-    }
-    */
-
-    // Constructor/prototype pattern attempt
-    /*
-    function Player(playerNumber) {
-        this.playerNumber = playerNumber;
-        this.alive  = 1;
-    }
-
-    Player.prototype.getPlayerNumber = () => {
-        return this.playerNumber;
-    }
-    */
-
-    // Constructor/prototype method class equivalent
     class Player {
         constructor(playerNumber) {
             this.playerNumber   = playerNumber;
@@ -150,23 +118,15 @@ function startSingleplayerGame(bots) {
     Creating playerbase
     */
 
-    // Object factory pattern
-
-    /*players.push(createPlayer(0)); // create the non-bot player
+    players.push(new Player(0)); // create the non-bot player first
     console.log('created player 0');
-    for(let i = 1; i <= bots; i++) {
-        players.push(createPlayer(i));
-        console.log(`created bot ${i}`);
-    }*/
-
-    // Constructor/prototype pattern
-    players.push(new Player(0)); // create the non-bot player
-    console.log('created player 0');
+    // loop through chosen number of bots and create too.
     for(let i = 1; i <= bots; i++) {
         players.push(new Player(i));
         console.log(`created bot ${i}`);
     }
 
+    // testing
     for (p of players) {
         if (p.playerNumber === 4) p.setAliveStatus(0);
         const playerStatus = p.getAliveStatus() ? 'alive' : 'dead';
