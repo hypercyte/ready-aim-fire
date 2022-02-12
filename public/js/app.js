@@ -147,5 +147,12 @@ function startSingleplayerGame(bots) {
         enemySelect.appendChild(el);
     }
 
-    
+    /*
+    Event listeners
+    */
+
+    shootEnemyButton.addEventListener('click', () => {
+        const selectedEnemy = enemySelect.value;
+        console.log(selectedEnemy);
+    })
 }
