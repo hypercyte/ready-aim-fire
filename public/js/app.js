@@ -32,7 +32,7 @@ homeButton.addEventListener('click', () => {
     if (singleplayerButton.style.display !== 'none') return;
     closeSingleplayerMenu();
     showGamemodeButtons();
-    hideGame();
+    closeGame();
     // TODO: Clicking home ends the game prematurely, thus should clear information about the game probably.
 })
 
@@ -64,7 +64,19 @@ function closeSingleplayerMenu() {singleplayerSettings.style.display = 'none';}
 
 // Show/hide game window
 function openGame() {singleplayerGame.style.display = 'block';}
-function closeGame() {singleplayerGame.style.display = 'none';}
+function closeGame() {
+    singleplayerGame.style.display = 'none';
+    clearEnemies(document.getElementById('enemies'));
+}
+function clearEnemies(enemySelector) {
+    // Code snippet from: https://stackoverflow.com/a/3364546
+    // by Fabiano
+    // Removing all elements from a select dropdown.
+    var i, L = enemySelector.options.length - 1;
+    for (i = L; i >= 0; i--) {
+        enemySelector.remove(i);
+    }
+}
 
 // Bot number slider value
 botSliderOutput.innerHTML = botSlider.value;
