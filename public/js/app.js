@@ -86,6 +86,7 @@ function startSingleplayerGame(bots) {
     const shootEnemyButton      = document.getElementById('shoot-enemy');
     const shootYourselfButton   = document.getElementById('shoot-yourself');
     const doNothingButton       = document.getElementById('do-nothing');
+    const enemySelect           = document.getElementById('enemies');
 
     /*
     Variables
@@ -126,10 +127,25 @@ function startSingleplayerGame(bots) {
         console.log(`created bot ${i}`);
     }
 
-    // testing
+    /* testing
     for (p of players) {
         if (p.playerNumber === 4) p.setAliveStatus(0);
         const playerStatus = p.getAliveStatus() ? 'alive' : 'dead';
         console.log(`Player ${p.getPlayerNumber()} is ${playerStatus}`);
+    }*/
+
+    /*
+    Populate the "enemies" dropdown selector
+    */
+
+    for (p of players) {
+        const enemy     = p.getPlayerNumber();
+        if (enemy === 0) continue;
+        const el        = document.createElement("option");
+        el.textContent  = `Bot ${enemy}`;
+        el.value        = enemy;
+        enemySelect.appendChild(el);
     }
+
+    
 }
