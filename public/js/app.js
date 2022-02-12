@@ -154,5 +154,14 @@ function startSingleplayerGame(bots) {
     shootEnemyButton.addEventListener('click', () => {
         const selectedEnemy = enemySelect.value;
         console.log(selectedEnemy);
+        // TODO
+    })
+
+    shootYourselfButton.addEventListener('click', () => {
+        // TODO
+    })
+
+    doNothingButton.addEventListener('click', () => {
+        // TODO
     })
 }
