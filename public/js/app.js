@@ -170,8 +170,7 @@ function startSingleplayerGame(bots) {
     shootEnemyButton.addEventListener('click', () => {
         const selectedEnemy = enemySelect.value;
         moves.push(1);
-        targets.push(selectedEnemy);
-        ProcessMoves(players, moves, targets);
+        ProcessMoves(players, moves, targets, selectedEnemy);
     })
 
     shootYourselfButton.addEventListener('click', () => {
@@ -186,12 +185,15 @@ function startSingleplayerGame(bots) {
 }
 
 // Calculate moves
-function ProcessMoves(players, moves, targets) {
+function ProcessMoves(players, moves, targets, selectedTarget) {
     const deathQueue = [];
 
     for (p of players) {
         const ply = p.getPlayerNumber();
-        if (ply === 1) continue;
+        if (ply === 0) {
+            if (moves[0] === 1) targets.push(selectedTarget);
+            continue;
+        }
         const randomPlayer = (Math.ceil(Math.random() * players.length)) - 1;
         const randomMove = Math.ceil(Math.random() * 3);
         moves.push(randomMove);
@@ -202,18 +204,18 @@ function ProcessMoves(players, moves, targets) {
         }
     }
     
-    /*console.log("targets:")
+    console.log("targets:")
     for (t of targets) {
         console.log(t);
     }
     
-    console.log("moves:")
+    /*console.log("moves:")
     for (m of moves) {
         console.log(m);
     }*/
 
     // This could probably be way better with a sort of 2d array lookup maybe
-    for (let i = 0; i <= moves.length; i++) {
+    for (let i = 0; i < moves.length; i++) {
         if (moves[i] === 1) {
             if (i === 0) {
                 if (moves[targets[0]] == 2) {
@@ -235,7 +237,8 @@ function ProcessMoves(players, moves, targets) {
             }
         }
         else if (moves[i] === 2) {
-            if (!targets.includes(i)) {
+            //console.log(`${i} in targets? ${targets.includes(i)}`)
+            if (!(targets.includes(i))) {
                 deathQueue.push(i);
                 console.log(`Player ${i} shot themselves and died.`)
             } else {
@@ -254,6 +257,9 @@ function ProcessMoves(players, moves, targets) {
     for (p of players) {
         console.log(`Player ${p.getPlayerNumber()} is ${p.getAliveStatus()}`);
     }
+    
+    moves         = []; // array of all moves made by players each round.
+    targets       = []; // array of targets if shooting. null if not shooting.
 }
 
 function roundEndResults(moves) {
