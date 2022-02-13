@@ -212,6 +212,7 @@ function ProcessMoves(players, moves, targets) {
         console.log(m);
     }*/
 
+    // This could probably be way better with a sort of 2d array lookup maybe
     for (let i = 0; i <= moves.length; i++) {
         if (moves[i] === 1) {
             if (i === 0) {
