@@ -68,6 +68,7 @@ function closeGame() {
     singleplayerGame.style.display = 'none';
     clearEnemies(document.getElementById('enemies'));
 }
+
 function clearEnemies(enemySelector) {
     // Code snippet from: https://stackoverflow.com/a/3364546
     // by Fabiano
@@ -106,6 +107,9 @@ function startSingleplayerGame(bots) {
 
     let roundNumber     = 0;  // Keeps track of which round we are currently on.
     const players       = []; // array of all players. will be populated later.
+    const moves         = []; // array of all moves made by players each round.
+    const targets       = []; // array of targets if shooting. null if not shooting.
+    //let selectedAction  = 
 
     /*
     Player class
@@ -165,15 +169,92 @@ function startSingleplayerGame(bots) {
 
     shootEnemyButton.addEventListener('click', () => {
         const selectedEnemy = enemySelect.value;
-        console.log(selectedEnemy);
-        // TODO
+        moves.push(1);
+        targets.push(selectedEnemy);
+        ProcessMoves(players, moves, targets);
     })
 
     shootYourselfButton.addEventListener('click', () => {
+        moves.push(2);
         // TODO
     })
 
     doNothingButton.addEventListener('click', () => {
+        moves.push(3);
         // TODO
     })
+}
+
+// Calculate moves
+function ProcessMoves(players, moves, targets) {
+    const deathQueue = [];
+
+    for (p of players) {
+        const ply = p.getPlayerNumber();
+        if (ply === 1) continue;
+        const randomPlayer = (Math.ceil(Math.random() * players.length)) - 1;
+        const randomMove = Math.ceil(Math.random() * 3);
+        moves.push(randomMove);
+        if (randomMove === 1) {
+            targets.push(randomPlayer);
+        } else {
+            targets.push(null);
+        }
+    }
+    
+    /*console.log("targets:")
+    for (t of targets) {
+        console.log(t);
+    }
+    
+    console.log("moves:")
+    for (m of moves) {
+        console.log(m);
+    }*/
+
+    for (let i = 0; i <= moves.length; i++) {
+        if (moves[i] === 1) {
+            if (i === 0) {
+                if (moves[targets[0]] == 2) {
+                    deathQueue.push(i);
+                    console.log(`Player ${i} tried to shoot Player ${targets[0]} but they got hit instead...`);
+                } else {
+                    deathQueue.push(targets[0]);
+                    console.log(`Player ${i} shot and killed Player ${targets[0]}`);
+                }
+            }
+            else {
+                if (moves[targets[i]] == 2) {
+                    deathQueue.push(i);
+                    console.log(`Player ${i} tried to shoot Player ${targets[i]} but they got hit instead...`);
+                } else {
+                    deathQueue.push(targets[i]);
+                    console.log(`Player ${i} shot and killed Player ${targets[i]}`);
+                }
+            }
+        }
+        else if (moves[i] === 2) {
+            if (!targets.includes(i)) {
+                deathQueue.push(i);
+                console.log(`Player ${i} shot themselves and died.`)
+            } else {
+                console.log(`Player ${i} shot themselves, and ducked when they noticed soemone and shot them instead lol.`)
+            }
+        }
+        else {
+            console.log(`Player ${i} did nothing.`)
+        }
+    }
+
+    for (d of deathQueue) {
+        players[d].setAliveStatus(0);
+    }
+
+    for (p of players) {
+        console.log(`Player ${p.getPlayerNumber()} is ${p.getAliveStatus()}`);
+    }
+}
+
+function roundEndResults(moves) {
+
 }
