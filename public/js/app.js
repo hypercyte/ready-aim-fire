@@ -109,6 +109,7 @@ function startSingleplayerGame(bots) {
     const players       = []; // array of all players. will be populated later.
     const moves         = []; // array of all moves made by players each round.
     const targets       = []; // array of targets if shooting. null if not shooting.
+    let selectedEnemy = 0;
     //let selectedAction  = 
 
     /*
@@ -168,98 +169,75 @@ function startSingleplayerGame(bots) {
     */
 
     shootEnemyButton.addEventListener('click', () => {
-        const selectedEnemy = enemySelect.value;
-        moves.push(1);
-        ProcessMoves(players, moves, targets, selectedEnemy);
+        selectedEnemy = parseInt(enemySelect.value);
+        //moves.push(1);
+        //ProcessMoves(players, moves, targets, selectedEnemy);
+        ProcessMoves2(players, selectedEnemy);
     })
 
     shootYourselfButton.addEventListener('click', () => {
-        moves.push(2);
+        //moves.push(2);
         // TODO
     })
 
     doNothingButton.addEventListener('click', () => {
-        moves.push(3);
+        //moves.push(3);
         // TODO
     })
 }
 
-// Calculate moves
-function ProcessMoves(players, moves, targets, selectedTarget) {
-    const deathQueue = [];
+function ProcessMoves2(players, selectedEnemy) {
+    const movesMap = new Map();
 
     for (p of players) {
         const ply = p.getPlayerNumber();
-        if (ply === 0) {
-            if (moves[0] === 1) targets.push(selectedTarget);
-            continue;
-        }
-        const randomPlayer = (Math.ceil(Math.random() * players.length)) - 1;
-        const randomMove = Math.ceil(Math.random() * 3);
-        moves.push(randomMove);
-        if (randomMove === 1) {
-            targets.push(randomPlayer);
+        if (ply !== 0) {
+            let randomMove = Math.ceil(Math.random() * 3);
+            let randomPlayer = (Math.ceil(Math.random() * players.length)) - 1;
+
+            // Set moves based on randomly selected move.
+            switch (randomMove) {
+                case 1:
+                    while (randomMove === ply) randomMove = Math.ceil(Math.random() * 3);
+                    movesMap.set(ply, randomPlayer);
+                    break;
+                case 2:
+                    movesMap.set(ply, ply);
+                    break;
+                case 3:
+                    movesMap.set(ply, null);
+                    break;
+            }
         } else {
-            targets.push(null);
+            movesMap.set(ply, selectedEnemy);
+            console.log("players move got set")
         }
     }
-    
-    console.log("targets:")
-    for (t of targets) {
-        console.log(t);
-    }
-    
-    /*console.log("moves:")
-    for (m of moves) {
-        console.log(m);
-    }*/
 
-    // This could probably be way better with a sort of 2d array lookup maybe
-    for (let i = 0; i < moves.length; i++) {
-        if (moves[i] === 1) {
-            if (i === 0) {
-                if (moves[targets[0]] == 2) {
-                    deathQueue.push(i);
-                    console.log(`Player ${i} tried to shoot Player ${targets[0]} but they got hit instead...`);
-                } else {
-                    deathQueue.push(targets[0]);
-                    console.log(`Player ${i} shot and killed Player ${targets[0]}`);
+    console.log(movesMap)
+
+    movesMap.forEach(function(target, player) {
+        if (player === target) {
+            let targetted = false;
+            movesMap.forEach(function(t) {
+                if (t === player) {
+                    targetted = true;
                 }
-            }
-            else {
-                if (moves[targets[i]] == 2) {
-                    deathQueue.push(i);
-                    console.log(`Player ${i} tried to shoot Player ${targets[i]} but they got hit instead...`);
-                } else {
-                    deathQueue.push(targets[i]);
-                    console.log(`Player ${i} shot and killed Player ${targets[i]}`);
-                }
-            }
-        }
-        else if (moves[i] === 2) {
-            //console.log(`${i} in targets? ${targets.includes(i)}`)
-            if (!(targets.includes(i))) {
-                deathQueue.push(i);
-                console.log(`Player ${i} shot themselves and died.`)
+            })
+            
+            targetted ? console.log(`${player} tried to shoot themself but missed.`) : 
+                        console.log(`${player} shot themself.`)
+        } else if (target === null) {
+            console.log(`${player} did nothing.`)
+        } else {
+            let no_u = false;
+            if (movesMap.get(target) === target) {
+                console.log(`${player} tried to shoot ${target} but they got shot instead somehow.`);
             } else {
-                console.log(`Player ${i} shot themselves, and ducked when they noticed soemone and shot them instead lol.`)
+                console.log(`${player} shot ${target}.`)
             }
         }
-        else {
-            console.log(`Player ${i} did nothing.`)
-        }
-    }
-
-    for (d of deathQueue) {
-        players[d].setAliveStatus(0);
-    }
-
-    for (p of players) {
-        console.log(`Player ${p.getPlayerNumber()} is ${p.getAliveStatus()}`);
-    }
-    
-    moves         = []; // array of all moves made by players each round.
-    targets       = []; // array of targets if shooting. null if not shooting.
+    })
 }
 
 function roundEndResults(moves) {
