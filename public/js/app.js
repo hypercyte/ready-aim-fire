@@ -85,6 +85,11 @@ botSlider.oninput = function () {
     botSliderOutput.innerHTML = this.value;
 }
 
+/* 
+Round results storage
+*/
+const results = new Map(); 
+
 // Hide game settings and start the game.
 // Probably should take in the number of bots as param.
 function startSingleplayerGame(bots) {
@@ -169,77 +174,125 @@ function startSingleplayerGame(bots) {
     */
 
     shootEnemyButton.addEventListener('click', () => {
+        // selected enemy is the one that is selected by player
         selectedEnemy = parseInt(enemySelect.value);
-        //moves.push(1);
-        //ProcessMoves(players, moves, targets, selectedEnemy);
         ProcessMoves2(players, selectedEnemy);
+        finaliseRound(players,);
     })
 
     shootYourselfButton.addEventListener('click', () => {
-        //moves.push(2);
-        // TODO
+        // selected enemy is 0 as in yourself
+        ProcessMoves2(players, 0);
+        finaliseRound(players);
     })
 
     doNothingButton.addEventListener('click', () => {
-        //moves.push(3);
-        // TODO
+        // selected enemy null
+        ProcessMoves2(players, null);
+        finaliseRound(players);
     })
 }
 
 function ProcessMoves2(players, selectedEnemy) {
-    const movesMap = new Map();
+    const movesMap  = new Map();
 
     for (p of players) {
         const ply = p.getPlayerNumber();
         if (ply !== 0) {
+            // Choose a random move and player to be targetted.
             let randomMove = Math.ceil(Math.random() * 3);
             let randomPlayer = (Math.ceil(Math.random() * players.length)) - 1;
 
             // Set moves based on randomly selected move.
             switch (randomMove) {
                 case 1:
-                    while (randomMove === ply) randomMove = Math.ceil(Math.random() * 3);
+                    // Change the target until its someone else.
+                    while (randomPlayer === ply) randomPlayer = Math.ceil(Math.random() * 3);
                     movesMap.set(ply, randomPlayer);
                     break;
                 case 2:
+                    // Set target to self as theyre shooting themselves.
                     movesMap.set(ply, ply);
                     break;
                 case 3:
+                    // Player targets no-one because they did nothing.
                     movesMap.set(ply, null);
                     break;
             }
         } else {
+            // Set move for our player.
             movesMap.set(ply, selectedEnemy);
-            console.log("players move got set")
         }
     }
 
-    console.log(movesMap)
-
     movesMap.forEach(function(target, player) {
+        // If they shot themself:
         if (player === target) {
+
+            // Targetted by another player?
             let targetted = false;
-            movesMap.forEach(function(t) {
-                if (t === player) {
+
+            // Check if anyone is targetting player.
+            movesMap.forEach(function(t, p) {
+                // If player is targetted && (not including the self-target)
+                if (t === player && p !== player) {
                     targetted = true;
                 }
             })
             
-            targetted ? console.log(`${player} tried to shoot themself but missed.`) : 
-                        console.log(`${player} shot themself.`)
-        } else if (target === null) {
+            // Output based on whether targetted by another player or not.
+            if (targetted) {
+                console.log(`${player} tried to shoot themself but missed.`);
+                results.set(player, {action: "suicide", target: player, success: false})
+            } else {
+                console.log(`${player} shot themself.`);
+                results.set(player, {action: "suicide", target: player, success: true})
+            }
+
+        }
+        // If they did nothing:
+        else if (target === null) {
             console.log(`${player} did nothing.`)
-        } else {
-            let no_u = false;
+            results.set(player, {action: "nothing", target: null, success: true})
+        }
+        // If they shot someone:
+        else {
+            // If their target shot themself, player dies instead.
             if (movesMap.get(target) === target) {
                 console.log(`${player} tried to shoot ${target} but they got shot instead somehow.`);
-            } else {
+                results.set(player, {action: "shoot", target: player, success: false})
+            }
+            // Otherwise, target dies.
+            else {
                 console.log(`${player} shot ${target}.`)
+                results.set(player, {action: "shoot", target: target, success: true})
             }
         }
     })
 }
 
-function roundEndResults(moves) {
+function finaliseRound(players) {
+    console.log(results);
+    results.forEach(function(result, player) {
+        if (result.action === "shoot" && result.success === true) {
+            console.log(`Logged: ${result.target} is now dead (SHOT).`)
+            unalivePlayer(players, result.target);
+        }
+        else if (result.action === "shoot" && result.success === false) {
+            console.log(`Logged: ${result.target} is now dead (FAILED SHOT).`)
+            unalivePlayer(players, result.target);
+        }
+        else if (result.action === "suicide" && result.success === true) {
+            console.log(`Logged: ${result.target} is now dead (SUICIDE).`)
+            unalivePlayer(players, result.target);
+        }
+    });
+}
 
+function unalivePlayer(players, target) {
+    for (p of players) {
+        if (p.getPlayerNumber === target) {
+            p.setAliveStatus(0);
+        }
+    }
 }
