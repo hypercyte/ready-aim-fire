@@ -17,6 +17,9 @@ const botSliderOutput           = document.getElementById('botsliderOutput'); //
 const singleplayerSettings      = document.querySelector('.singleplayerSettings'); // Singleplayer game settings menu
 const singleplayerGame          = document.querySelector('.singleplayerGame'); // Singleplayer in-game section
 
+// Container for feed boxes.
+const feedContainer = document.getElementById("resultsFeedContainer");
+
 /*
 Event listeners
 */
@@ -260,7 +263,7 @@ function ProcessMoves2(players, selectedEnemy) {
             // If their target shot themself, player dies instead.
             if (movesMap.get(target) === target) {
                 console.log(`${player} tried to shoot ${target} but they got shot instead somehow.`);
-                results.set(player, {action: "shoot", target: player, success: false})
+                results.set(player, {action: "shoot", target: target, success: false})
             }
             // Otherwise, target dies.
             else {
@@ -272,19 +275,29 @@ function ProcessMoves2(players, selectedEnemy) {
 }
 
 function finaliseRound(players) {
+
     console.log(results);
     results.forEach(function(result, player) {
         if (result.action === "shoot" && result.success === true) {
             console.log(`Logged: ${result.target} is now dead (SHOT).`)
             unalivePlayer(players, result.target);
+            generateFeed(result, player, 1);
         }
         else if (result.action === "shoot" && result.success === false) {
-            console.log(`Logged: ${result.target} is now dead (FAILED SHOT).`)
-            unalivePlayer(players, result.target);
+            console.log(`Logged: ${player} is now dead (FAILED SHOT).`)
+            unalivePlayer(players, player);
+            generateFeed(result, player, 2);
         }
         else if (result.action === "suicide" && result.success === true) {
             console.log(`Logged: ${result.target} is now dead (SUICIDE).`)
             unalivePlayer(players, result.target);
+            generateFeed(result, player, 3);
+        }
+        else if (result.action === "suicide" && result.success === false) {
+            generateFeed(result, player, 4);
+        }
+        else {
+            generateFeed(result, player, 5);
         }
     });
 }
@@ -295,4 +308,48 @@ function unalivePlayer(players, target) {
             p.setAliveStatus(0);
         }
     }
+}
+
+function generateFeed(result, player, caseNumber) {
+        
+    // Create new div for each "box" in the feed
+    const box = document.createElement("div");
+    box.classList.add("box"); // Add it to the .box class
+    feedContainer.appendChild(box); // Add it to the feed container
+
+    // Creating the feed content
+    let content = "";
+    switch(caseNumber) {
+        case 1: // Simple shot and kill
+            content = document.createTextNode(
+                `Player ${player} shot and killed Player ${result.target}.`
+            );
+            break;
+        case 2: // Failed shot (Uno reverse card)
+            content = document.createTextNode(
+                `Player ${player} tried to shoot Player ${result.target} but they got shot instead somehow.`
+            );
+            break;
+        case 3: // Suicide
+            content = document.createTextNode(
+                `Player ${player} shot themself.`
+            );
+            break;
+        case 4: // Failed suicide (Successful reverse card)
+            content = document.createTextNode(
+                `Player ${player} tried to shoot themself but missed.`
+            );
+            break;
+        case 5: // Did nothing
+            content = document.createTextNode(
+                `Player ${player} did nothing.`
+            );
+            break;
+        default: // This shouldnt run
+            content = document.createTextNode(
+                `Player ${player}: Error`
+            );
+    }
+    box.appendChild(content); // Add to the box created earlier.
+
 }
