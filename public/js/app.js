@@ -12,6 +12,7 @@ const homeButton                = document.getElementById('homeButton'); // Home
 const singleplayerButton        = document.getElementById('singleplayerButton'); // Singleplayer or "Play With Bots" button
 const mutliplayerButton         = document.getElementById('multiplayerButton'); // Multiplayer button
 const singleplayerStartButton   = document.getElementById('startGameButton'); // Singleplayer menu start game button
+const nextRoundButton           = document.getElementById("next-round"); // Next round button
 const botSlider                 = document.getElementById('botCount'); // Slider choosing the number of bots for a game
 const botSliderOutput           = document.getElementById('botsliderOutput'); // The output of the number currently selected in the bot slider
 const singleplayerSettings      = document.querySelector('.singleplayerSettings'); // Singleplayer game settings menu
@@ -194,6 +195,11 @@ function startSingleplayerGame(bots) {
         ProcessMoves2(players, null);
         finaliseRound(players);
     })
+
+    nextRoundButton.addEventListener('click', () => {
+        document.getElementById("resultsFeedContainer").innerHTML = "";
+        nextRoundButton.style.display = "none";
+    })
 }
 
 function ProcessMoves2(players, selectedEnemy) {
@@ -302,7 +308,6 @@ function finaliseRound(players) {
     });
 
     // View next round button
-    const nextRoundButton = document.getElementById("next-round");
     nextRoundButton.style.display = "block";
 }
 
