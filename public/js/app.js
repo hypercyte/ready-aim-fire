@@ -300,6 +300,10 @@ function finaliseRound(players) {
             generateFeed(result, player, 5);
         }
     });
+
+    // View next round button
+    const nextRoundButton = document.getElementById("next-round");
+    nextRoundButton.style.display = "block";
 }
 
 function unalivePlayer(players, target) {
@@ -351,5 +355,4 @@ function generateFeed(result, player, caseNumber) {
             );
     }
     box.appendChild(content); // Add to the box created earlier.
-
 }
