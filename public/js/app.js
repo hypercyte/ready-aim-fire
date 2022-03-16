@@ -118,8 +118,7 @@ function startSingleplayerGame(bots) {
     const players       = []; // array of all players. will be populated later.
     const moves         = []; // array of all moves made by players each round.
     const targets       = []; // array of targets if shooting. null if not shooting.
-    let selectedEnemy = 0;
-    //let selectedAction  = 
+    let selectedEnemy   = 0;
 
     /*
     Player class
@@ -153,13 +152,6 @@ function startSingleplayerGame(bots) {
         console.log(`created bot ${i}`);
     }
 
-    /* testing
-    for (p of players) {
-        if (p.playerNumber === 4) p.setAliveStatus(0);
-        const playerStatus = p.getAliveStatus() ? 'alive' : 'dead';
-        console.log(`Player ${p.getPlayerNumber()} is ${playerStatus}`);
-    }*/
-
     /*
     Populate the "enemies" dropdown selector
     */
@@ -178,28 +170,59 @@ function startSingleplayerGame(bots) {
     */
 
     shootEnemyButton.addEventListener('click', () => {
+        disableActionButtons(shootEnemyButton, shootYourselfButton, doNothingButton);
+
         // selected enemy is the one that is selected by player
         selectedEnemy = parseInt(enemySelect.value);
         ProcessMoves2(players, selectedEnemy);
-        finaliseRound(players,);
+        finaliseRound(players);
+
+        // Dont go home until round ended.
+        homeButton.disabled = true;
     })
 
     shootYourselfButton.addEventListener('click', () => {
+        disableActionButtons(shootEnemyButton, shootYourselfButton, doNothingButton);
+
         // selected enemy is 0 as in yourself
         ProcessMoves2(players, 0);
         finaliseRound(players);
+        
+        // Dont go home until round ended.
+        homeButton.disabled = true;
     })
 
     doNothingButton.addEventListener('click', () => {
+        disableActionButtons(shootEnemyButton, shootYourselfButton, doNothingButton);
+
         // selected enemy null
         ProcessMoves2(players, null);
         finaliseRound(players);
+        
+        // Dont go home until round ended.
+        homeButton.disabled = true;
     })
 
     nextRoundButton.addEventListener('click', () => {
         document.getElementById("resultsFeedContainer").innerHTML = "";
         nextRoundButton.style.display = "none";
+        homeButton.disabled = false;
+        enableActionButtons(shootEnemyButton, shootYourselfButton, doNothingButton);
     })
+}
+
+// Disable the action buttons (buttons must be passed in)
+function disableActionButtons(b1, b2, b3) {
+    b1.disabled = true;
+    b2.disabled = true;
+    b3.disabled = true;
+}
+
+// Enable the action buttons (buttons must be passed in)
+function enableActionButtons(b1, b2, b3) {
+    b1.disabled = false;
+    b2.disabled = false;
+    b3.disabled = false;
 }
 
 function ProcessMoves2(players, selectedEnemy) {
@@ -282,20 +305,19 @@ function ProcessMoves2(players, selectedEnemy) {
 
 function finaliseRound(players) {
 
-    console.log(results);
     results.forEach(function(result, player) {
         if (result.action === "shoot" && result.success === true) {
-            console.log(`Logged: ${result.target} is now dead (SHOT).`)
+            //console.log(`Logged: ${result.target} is now dead (SHOT).`)
             unalivePlayer(players, result.target);
             generateFeed(result, player, 1);
         }
         else if (result.action === "shoot" && result.success === false) {
-            console.log(`Logged: ${player} is now dead (FAILED SHOT).`)
+            //console.log(`Logged: ${player} is now dead (FAILED SHOT).`)
             unalivePlayer(players, player);
             generateFeed(result, player, 2);
         }
         else if (result.action === "suicide" && result.success === true) {
-            console.log(`Logged: ${result.target} is now dead (SUICIDE).`)
+            //console.log(`Logged: ${result.target} is now dead (SUICIDE).`)
             unalivePlayer(players, result.target);
             generateFeed(result, player, 3);
         }
@@ -309,12 +331,15 @@ function finaliseRound(players) {
 
     // View next round button
     nextRoundButton.style.display = "block";
+
+
 }
 
 function unalivePlayer(players, target) {
     for (p of players) {
         if (p.getPlayerNumber === target) {
             p.setAliveStatus(0);
+            break;
         }
     }
 }
